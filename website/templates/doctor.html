@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinesys – Physician Clinical Portal</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo-brand">
+            <span class="logo-dot"></span>
+            <span>Kinesys</span>
+            <span class="mono-label" style="color: var(--mint-primary); margin-left: 0.5rem; font-size: 0.75rem;">PHYSICIAN PORTAL</span>
+        </a>
+        <div class="nav-controls">
+            <div id="doctor-bar" class="hidden" style="display: flex; align-items: center; gap: 1rem;">
+                <span class="user-badge-text">Dr. <strong id="doctor-name-display">...</strong></span>
+                <button id="doc-switch-btn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;">Switch Physician</button>
+            </div>
+            <button id="doc-login-btn" class="btn btn-mint">Select / Register Physician Profile</button>
+            <a href="/app" class="btn btn-outline">Patient Suite →</a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 2rem;">
+        <!-- Header -->
+        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <div class="mono-label" style="color: var(--mint-primary); margin-bottom: 0.5rem;">CLINICAL DECISION SUPPORT</div>
+                <h1 style="font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem 0;">Physician Patient Roster</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">Review longitudinal telemetry, multi-disease cross-signal flags, and raw motor logs shared by your patients.</p>
+            </div>
+            <button id="doc-refresh-btn" class="btn btn-outline" style="font-size: 0.85rem;">🔄 Refresh Roster</button>
+        </div>
+
+        <!-- Doctor Roster Container -->
+        <div id="roster-container">
+            <div class="panel" style="text-align: center; padding: 4rem 2rem;">
+                <h3 style="color: var(--text-muted); margin-bottom: 1rem;">No Physician Profile Selected</h3>
+                <p style="color: var(--text-dim); max-width: 500px; margin: 0 auto 1.5rem auto; font-size: 0.9rem;">
+                    Please select or register a physician profile to view patient telemetry records shared with your clinic.
+                </p>
+                <button class="btn btn-mint" onclick="_openDoctorModal()">Select / Register Physician Profile 🩺</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Doctor Registration / Selection -->
+    <div id="doctor-modal-overlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 520px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; color: #fff; font-size: 1.4rem; font-weight: 700;">Physician Login / Registration</h2>
+                <button id="doctor-modal-close-x" style="background: none; border: none; color: #8b949e; cursor: pointer; font-size: 1.4rem;" onclick="_closeDoctorModal()">✕</button>
+            </div>
+
+            <!-- Existing Doctors List -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #c9d1d9; font-size: 0.9rem; font-weight: 500;">Select Existing Physician Profile</label>
+                <select id="doctor-select" style="width: 100%; padding: 10px 14px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #fff; font-size: 0.95rem;">
+                    <option value="">-- Choose Physician --</option>
+                </select>
+                <button class="btn btn-mint" style="width: 100%; margin-top: 0.75rem;" onclick="_confirmDoctorSelect()">Sign In as Selected Physician →</button>
+            </div>
+
+            <div style="text-align: center; color: var(--text-dim); margin: 1rem 0; font-size: 0.85rem; border-top: 1px solid var(--border-light); padding-top: 1rem;">OR REGISTER NEW PHYSICIAN PROFILE</div>
+
+            <!-- New Doctor Registration Form -->
+            <form id="doctor-reg-form" onsubmit="return false;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #c9d1d9; font-size: 0.88rem;" for="doc-reg-name">Physician Full Name *</label>
+                    <input id="doc-reg-name" type="text" placeholder="e.g. Dr. Sarah Jenkins" style="width: 100%; padding: 10px 14px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #fff; font-size: 0.95rem; box-sizing: border-box;" required>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #c9d1d9; font-size: 0.88rem;" for="doc-reg-spec">Specialty / Department</label>
+                    <input id="doc-reg-spec" type="text" placeholder="e.g. Movement Disorders / Neurology" style="width: 100%; padding: 10px 14px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #fff; font-size: 0.95rem; box-sizing: border-box;">
+                </div>
+                <button type="submit" class="btn btn-outline" style="width: 100%; border-color: var(--mint-primary); color: var(--mint-primary);" id="doc-reg-submit-btn">Register New Physician Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script>
+        let currentDoctorId = localStorage.getItem('kinesys_doc_id');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            _updateDoctorUI();
+            _bindEvents();
+        });
+
+        function showToast(msg, type = 'info', duration = 3500) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'success') toast.style.backgroundColor = 'var(--accent-ok)';
+            if (type === 'error') toast.style.backgroundColor = 'var(--accent-err)';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), duration);
+        }
+
+        function _bindEvents() {
+            document.getElementById('doc-login-btn')?.addEventListener('click', _openDoctorModal);
+            document.getElementById('doc-switch-btn')?.addEventListener('click', _openDoctorModal);
+            document.getElementById('doc-refresh-btn')?.addEventListener('click', () => {
+                if (currentDoctorId) _loadRoster(currentDoctorId);
+            });
+
+            document.getElementById('doctor-reg-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                _registerDoctor();
+            });
+        }
+
+        function _openDoctorModal() {
+            const overlay = document.getElementById('doctor-modal-overlay');
+            if (overlay) overlay.classList.add('active', 'open');
+            _loadDoctorsDropdown();
+        }
+
+        function _closeDoctorModal() {
+            const overlay = document.getElementById('doctor-modal-overlay');
+            if (overlay) overlay.classList.remove('active', 'open');
+        }
+
+        async function _loadDoctorsDropdown() {
+            const sel = document.getElementById('doctor-select');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Loading physicians...</option>';
+            try {
+                const docs = await API.getDoctors();
+                if (!docs || docs.length === 0) {
+                    sel.innerHTML = '<option value="">No physicians registered yet</option>';
+                    return;
+                }
+                sel.innerHTML = '<option value="">-- Choose Physician --</option>';
+                docs.forEach(d => {
+                    sel.innerHTML += `<option value="${d.id}">Dr. ${d.name} (${d.specialty || 'General Practice'})</option>`;
+                });
+            } catch (e) {
+                sel.innerHTML = '<option value="">Error loading physicians</option>';
+            }
+        }
+
+        async function _confirmDoctorSelect() {
+            const sel = document.getElementById('doctor-select');
+            const docId = sel?.value;
+            if (!docId) { showToast('Please select a physician profile.', 'error'); return; }
+            currentDoctorId = docId;
+            localStorage.setItem('kinesys_doc_id', docId);
+            _closeDoctorModal();
+            _updateDoctorUI();
+            showToast('Signed in as physician.', 'success');
+        }
+
+        async function _registerDoctor() {
+            const nameInput = document.getElementById('doc-reg-name');
+            const specInput = document.getElementById('doc-reg-spec');
+            const name = nameInput?.value.trim();
+            const specialty = specInput?.value.trim();
+            if (!name) { showToast('Please enter physician name.', 'error'); return; }
+            try {
+                const res = await API.createDoctor(name, specialty);
+                currentDoctorId = res.doctor_id;
+                localStorage.setItem('kinesys_doc_id', currentDoctorId);
+                _closeDoctorModal();
+                _updateDoctorUI();
+                showToast(`Physician profile registered for Dr. ${name}.`, 'success');
+            } catch (e) {
+                showToast('Error registering physician profile.', 'error');
+            }
+        }
+
+        async function _updateDoctorUI() {
+            const docBar = document.getElementById('doctor-bar');
+            const loginBtn = document.getElementById('doc-login-btn');
+            if (currentDoctorId) {
+                if (docBar) docBar.classList.remove('hidden');
+                if (loginBtn) loginBtn.classList.add('hidden');
+                try {
+                    const data = await API.getDoctorPatients(currentDoctorId);
+                    const nameEl = document.getElementById('doctor-name-display');
+                    if (nameEl && data.doctor) nameEl.textContent = data.doctor.name;
+                    _renderRoster(data.roster || []);
+                } catch (e) {
+                    localStorage.removeItem('kinesys_doc_id');
+                    currentDoctorId = null;
+                    _updateDoctorUI();
+                }
+            } else {
+                if (docBar) docBar.classList.add('hidden');
+                if (loginBtn) loginBtn.classList.remove('hidden');
+            }
+        }
+
+        function _renderRoster(roster) {
+            const container = document.getElementById('roster-container');
+            if (!container) return;
+
+            if (roster.length === 0) {
+                container.innerHTML = `
+                    <div class="panel" style="text-align: center; padding: 4rem 2rem;">
+                        <h3 style="color: var(--mint-primary); margin-bottom: 0.5rem;">No Patients Shared Data Yet</h3>
+                        <p style="color: var(--text-muted); max-width: 540px; margin: 0 auto 1.5rem auto; font-size: 0.9rem;">
+                            Your roster is empty. Patients can share their interaction telemetry with your profile from their Kinesys Patient Hub or Diagnostic File.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            let cardsHtml = '';
+            roster.forEach(r => {
+                const p = r.patient;
+                const status = r.status;
+                const totalSess = r.total_sessions || 0;
+                const score = r.overall_wellness_score !== null ? `${r.overall_wellness_score} / 100` : 'N/A';
+
+                let statusBadge = '<span class="mono-label" style="color: var(--text-muted);">BUILDING BASELINE</span>';
+                let borderStyle = 'border-top: 3px solid var(--border-light);';
+
+                if (status === 'alert') {
+                    statusBadge = '<span class="mono-label" style="color: var(--risk-amber); background: var(--risk-amber-subtle); padding: 4px 8px; border-radius: 4px;">⚠️ CLINICAL DRIFT ALERT</span>';
+                    borderStyle = 'border-top: 3px solid var(--risk-amber);';
+                } else if (status === 'clear') {
+                    statusBadge = '<span class="mono-label" style="color: var(--mint-primary); background: var(--mint-subtle); padding: 4px 8px; border-radius: 4px;">✓ BASELINE STABLE</span>';
+                    borderStyle = 'border-top: 3px solid var(--mint-primary);';
+                }
+
+                let flaggedList = '';
+                if (r.flagged_conditions && r.flagged_conditions.length > 0) {
+                    flaggedList = '<div style="margin-top: 0.75rem; padding: 10px; background: rgba(235, 87, 87, 0.1); border: 1px solid rgba(235, 87, 87, 0.3); border-radius: 6px; font-size: 0.85rem; color: #ff7b72;">';
+                    r.flagged_conditions.forEach(fc => {
+                        flaggedList += `<div style="margin-bottom: 4px;">⚠️ <strong>Correlated Condition Marker — ${fc.condition}:</strong> ${fc.evidence.join('; ')}</div>`;
+                    });
+                    flaggedList += '</div>';
+                }
+
+                cardsHtml += `
+                    <div class="panel" style="${borderStyle} margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="margin: 0 0 0.25rem 0; color: #fff; font-size: 1.25rem;">${p.name}</h3>
+                                <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Age: ${p.age || 'N/A'} | Shared on: ${new Date(p.shared_at).toLocaleDateString()}</p>
+                            </div>
+                            <div>${statusBadge}</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.85rem;">
+                            <div style="background: var(--bg-input); padding: 10px; border-radius: 6px; border: 1px solid var(--border-light);">
+                                <div style="color: var(--text-muted); font-size: 0.7rem;">OVERALL SCORE</div>
+                                <div style="color: var(--mint-primary); font-size: 1.1rem; font-weight: 600; margin-top: 2px;">${score}</div>
+                            </div>
+                            <div style="background: var(--bg-input); padding: 10px; border-radius: 6px; border: 1px solid var(--border-light);">
+                                <div style="color: var(--text-muted); font-size: 0.7rem;">TOTAL SESSIONS</div>
+                                <div style="color: #fff; font-size: 1.1rem; font-weight: 600; margin-top: 2px;">${totalSess}</div>
+                            </div>
+                            <div style="background: var(--bg-input); padding: 10px; border-radius: 6px; border: 1px solid var(--border-light);">
+                                <div style="color: var(--text-muted); font-size: 0.7rem;">STATUS</div>
+                                <div style="color: ${status === 'alert' ? 'var(--risk-amber)' : 'var(--mint-primary)'}; font-size: 1rem; font-weight: 600; margin-top: 2px;">${status.toUpperCase()}</div>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">${r.summary}</p>
+                        ${flaggedList}
+
+                        <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                            <a href="/dashboard/${p.id}?view=doctor" class="btn btn-mint" style="font-size: 0.85rem;">Inspect Full Clinical Diagnostic File →</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = cardsHtml;
+        }
+    </script>
+</body>
+</html>

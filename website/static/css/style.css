@@ -1,0 +1,470 @@
+/* =============================================================
+   NeuroType Clinical Mint-Dark Design System
+   Matches the validated prototype aesthetics:
+   - Deep Mint Dark Background: #08120e / #0d1714
+   - Translucent Panels: #11211b / #14261f
+   - Precision Mint Accents: #38d9a9 / #26a676
+   - Monospace Telemetry Font: JetBrains Mono / Roboto Mono
+   - Crisp, professional UI with zero cheap emojis
+   ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Cyber-Clinical Teal & Electric Emerald Core Palette */
+  --bg-primary: #070b14;
+  --bg-surface: #0c1220;
+  --bg-card: #111a2e;
+  --bg-card-hover: #16223d;
+  --bg-input: #090e1a;
+
+  /* Cyber Cyan / Teal & Electric Emerald Accents */
+  --mint-primary: #00f2fe;
+  --mint-dark: #4facfe;
+  --mint-glow: rgba(0, 242, 254, 0.25);
+  --mint-subtle: rgba(0, 242, 254, 0.08);
+
+  --emerald-ok: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.2);
+
+  /* Alert / Risk Colors */
+  --risk-amber: #fbbf24;
+  --risk-amber-bg: rgba(251, 191, 36, 0.12);
+  --risk-red: #ff5252;
+  --risk-red-bg: rgba(255, 82, 82, 0.12);
+
+  /* Text Hierarchy */
+  --text-primary: #f0f6fc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+
+  /* Borders & Dividers */
+  --border-light: #1e293b;
+  --border-focus: #00f2fe;
+  --border-muted: #172033;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Roboto Mono', monospace;
+
+  /* Transitions & Shadows */
+  --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-card: 0 10px 32px rgba(0, 0, 0, 0.45);
+  --shadow-mint: 0 0 24px rgba(0, 242, 254, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography & Headings ───────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.mint-text {
+  color: var(--mint-primary);
+}
+
+/* ── Navigation Header ────────────────────────────────────────── */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--mint-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--mint-primary);
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-badge-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.user-badge-text strong {
+  color: var(--text-primary);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  font-family: var(--font-sans);
+}
+
+.btn-mint {
+  background: var(--mint-primary);
+  color: #08120e;
+  border-color: var(--mint-primary);
+  font-weight: 700;
+}
+
+.btn-mint:hover {
+  background: #2ec496;
+  box-shadow: var(--shadow-mint);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-light);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+  background: var(--bg-card);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--risk-red);
+  color: var(--risk-red);
+}
+
+.btn-danger:hover {
+  background: var(--risk-red-bg);
+}
+
+/* ── Layout Containers ────────────────────────────────────────── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ── Cards & Panels ───────────────────────────────────────────── */
+.card, .panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: var(--mint-primary);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), var(--shadow-mint);
+}
+
+/* ── Game Grid Cards ───────────────────────────────────────────── */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hub-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .hub-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.game-icon-svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--mint-primary);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-bottom: 1rem;
+}
+
+/* ── Session Status Strip ─────────────────────────────────────── */
+.status-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.session-dots {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-light);
+}
+
+.dot.active {
+  background: var(--mint-primary);
+  box-shadow: 0 0 8px var(--mint-primary);
+}
+
+/* ── Live Telemetry Canvas Box ────────────────────────────────── */
+.live-rhythm-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.live-canvas {
+  width: 100%;
+  height: 120px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  margin: 0.75rem 0;
+  display: block;
+}
+
+/* ── Target Passage & Typing Input ────────────────────────────── */
+.passage-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  user-select: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.char-correct {
+  color: var(--mint-primary);
+  font-weight: 600;
+  background: rgba(56, 217, 169, 0.12);
+}
+
+.char-wrong {
+  color: var(--risk-red);
+  background: rgba(255, 123, 114, 0.2);
+  text-decoration: underline;
+}
+
+.char-current {
+  border-bottom: 2px solid var(--mint-primary);
+  color: #fff;
+  background: rgba(56, 217, 169, 0.25);
+}
+
+.typing-textarea {
+  width: 100%;
+  height: 100px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+  transition: var(--transition);
+}
+
+.typing-textarea:focus {
+  border-color: var(--mint-primary);
+  box-shadow: 0 0 12px var(--mint-glow);
+}
+
+.paste-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 4px;
+  float: right;
+}
+
+/* ── Alert Banners ────────────────────────────────────────────── */
+.alert-banner {
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid;
+}
+
+.alert-amber {
+  background: var(--risk-amber-bg);
+  border-color: var(--risk-amber);
+  color: #fce7f3;
+}
+
+.alert-mint {
+  background: var(--mint-subtle);
+  border-color: var(--mint-primary);
+  color: var(--text-primary);
+}
+
+/* ── Session History Table ────────────────────────────────────── */
+.session-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.session-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.session-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-muted);
+  color: var(--text-primary);
+}
+
+.session-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ── Modals & Overlays ────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(8, 18, 14, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active, .modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Toast Notifications ──────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 1050;
+}
+
+.toast {
+  background: var(--bg-card);
+  border-left: 4px solid var(--mint-primary);
+  color: var(--text-primary);
+  padding: 0.85rem 1.25rem;
+  border-radius: 6px;
+  box-shadow: var(--shadow-card);
+  font-size: 0.9rem;
+}
+
+/* ── Print Styles ─────────────────────────────────────────────── */
+@media print {
+  body { background: #fff; color: #000; }
+  nav, .btn, #toast-container { display: none !important; }
+  .card, .panel, .session-table { background: #fff; border: 1px solid #ccc; color: #000; }
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinesys – Diagnostic Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* CSS for Consolidated Card Tables */
+        .card-table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .consolidated-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .consolidated-card:hover {
+            border-color: var(--mint-primary);
+            transform: translateY(-2px);
+        }
+        .metric-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+        .metric-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid var(--border-muted);
+        }
+        .metric-table tr:last-child td {
+            border-bottom: none;
+        }
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        .metric-value {
+            color: var(--mint-primary);
+            font-weight: 600;
+            text-align: right;
+        }
+        .disease-tag {
+            background: rgba(235, 87, 87, 0.12);
+            color: #ff7b72;
+            border: 1px solid rgba(235, 87, 87, 0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Notes / AJAX Communication Section */
+        .notes-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .note-bubble {
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+        .note-bubble.doctor {
+            border-left: 3px solid var(--mint-primary);
+        }
+        .note-bubble.patient {
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        /* ── Print Media Styles ───────────────────── */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #111111 !important;
+                font-family: Arial, sans-serif !important;
+            }
+            nav, .no-print, button, .btn, footer, #notes-section, .nav-controls {
+                display: none !important;
+            }
+            .container > *:not(#print-section) {
+                display: none !important;
+            }
+            #print-section {
+                display: block !important;
+                background: #ffffff !important;
+                color: #111111 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            @page {
+                margin: 1.2cm;
+                size: portrait;
+            }
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+            .print-table th, .print-table td {
+                border: 1px solid #ccc;
+                padding: 8px 12px;
+                text-align: left;
+                font-size: 12px;
+            }
+            .print-table th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            .print-header {
+                border-bottom: 2px solid #111;
+                padding-bottom: 12px;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        window.NT_USER_ID = {{ user.id | tojson | safe if user else 'null' }};
+    </script>
+    <nav class="no-print">
+        <a href="/app" class="logo-brand">
+            <span class="logo-dot"></span>
+            <span>Kinesys</span>
+        </a>
+        <div class="nav-controls">
+            <a href="/doctor" class="btn btn-outline">Share with a doctor 🩺</a>
+            <a href="/app" class="btn btn-outline">← Back to check-ins</a>
+            <button class="btn btn-mint" onclick="window.print()">Print Report 🖨️</button>
+        </div>
+    </nav>
+
+    <div class="container no-print">
+        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <div class="mono-label" style="color: var(--mint-primary); margin-bottom: 0.5rem;">LONGITUDINAL CLINICAL TELEMETRY</div>
+                <h1 style="font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem 0;">Diagnostic Trends & Pattern Analysis</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">Profile: <strong id="patient-id" style="color: var(--text-primary);">...</strong> | Last updated: <span id="date-assessed" style="color: var(--text-primary);"></span></p>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin: 0.5rem 0 0 0; max-width: 640px;">This system compares each check-in against your personal baseline. Multiple signals must drift concurrently across sessions before any pattern change is flagged.</p>
+            </div>
+        </div>
+
+        <!-- Domain-level / Clinical pattern summary -->
+        <div id="diagnostics-container" style="margin-bottom: 3rem;">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Single Consolidated Card Tables Grid -->
+        <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 700;">Multi-Domain Clinical Telemetry</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Consolidated raw biomarkers and personal drift metrics across all 9 research protocols.</p>
+        </div>
+        <div id="overview-grid" class="card-table-grid">
+            <!-- Consolidated Card Tables populated by JS -->
+        </div>
+
+        <!-- Session history charts -->
+        <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 700;">Longitudinal Session History</h2>
+        </div>
+        <div id="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">TYPING RHYTHM</div><div style="position:relative; height:220px;"><canvas id="chart-typing"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">TAP SYNC</div><div style="position:relative; height:220px;"><canvas id="chart-tapsync"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">PATH TRACE</div><div style="position:relative; height:220px;"><canvas id="chart-pathtrace"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">STEADY HOLD</div><div style="position:relative; height:220px;"><canvas id="chart-steadyhold"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">FLASH REACT</div><div style="position:relative; height:220px;"><canvas id="chart-flashreact"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">SEQUENCE RECALL</div><div style="position:relative; height:220px;"><canvas id="chart-sequence"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">TRAIL CONNECT</div><div style="position:relative; height:220px;"><canvas id="chart-trailmaking"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">WORD SPARK</div><div style="position:relative; height:220px;"><canvas id="chart-wordspark"></canvas></div></div>
+            <div class="card"><div class="mono-label" style="margin-bottom:0.75rem; color:var(--mint-primary);">FOCUS WATCH</div><div style="position:relative; height:220px;"><canvas id="chart-focuswatch"></canvas></div></div>
+        </div>
+
+        <!-- Doctor-Patient Communication & Notes Box -->
+        <div id="notes-section" class="notes-container">
+            <div class="mono-label" style="color: var(--mint-primary); margin-bottom: 0.5rem;">CLINICAL NOTES & PHYSICIAN COMMUNICATION</div>
+            <h3 style="margin: 0 0 1rem 0; color: #fff;">Doctor-Patient Consultation Log</h3>
+            <div id="notes-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Loading clinical notes...</p>
+            </div>
+            <form id="note-form" onsubmit="_submitNote(event);" style="display: flex; gap: 0.75rem;">
+                <input id="note-input" type="text" placeholder="Type a clinical note or communication message..." style="flex: 1; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; color: #fff; font-size: 0.9rem;" required>
+                <button type="submit" class="btn btn-mint" style="font-size: 0.85rem;">Send Note (AJAX)</button>
+            </form>
+        </div>
+
+        <footer style="border-top: 1px solid var(--border-light); padding: 2rem 0; text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+            <p>Kinesys Clinical Diagnostic System. Research & Screening Purpose Only.</p>
+        </footer>
+    </div>
+
+    <!-- ── Print Report Section (Visible only during window.print()) ── -->
+    <div id="print-section" style="display:none;">
+        <div class="print-header">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="margin: 0; font-size: 24px; color: #111;">KINESYS CLINICAL TELEMETRY REPORT</h1>
+                    <p style="margin: 4px 0 0 0; font-size: 12px; color: #555;">Automated Motor & Executive Function Screening Index</p>
+                </div>
+                <div style="text-align: right; font-size: 12px; color: #555;">
+                    <div><strong>Date Generated:</strong> <span id="print-date"></span></div>
+                    <div><strong>Patient ID:</strong> <span id="print-patient-id"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 14px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px;">1. EXECUTIVE PATTERN SUMMARY</h3>
+            <div id="print-summary-text" style="font-size: 12px; line-height: 1.5; color: #222; background: #f9f9f9; padding: 10px; border-left: 3px solid #333;">
+                Loading pattern summary...
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 14px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px;">2. PROTOCOL TELEMETRY BREAKDOWN</h3>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>Protocol</th>
+                        <th>Domain</th>
+                        <th>Sessions</th>
+                        <th>Drift vs Personal Baseline</th>
+                        <th>Key Biomarker Metric</th>
+                    </tr>
+                </thead>
+                <tbody id="print-table-body">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 14px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px;">3. CLINICAL NOTES & COMMUNICATION LOG</h3>
+            <div id="print-notes-list" style="font-size: 11px; line-height: 1.4; color: #333;">
+                No clinical notes recorded.
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 10px; color: #666; text-align: justify;">
+            <strong>Clinical Disclaimer:</strong> This report is generated by an automated motor/cognitive screening tool and does not constitute a formal clinical diagnosis. The Kinesys score is an ipsative baseline drift index. A flagged result (drift ≥ 25%) should be reviewed by a qualified neurologist or movement disorder specialist in conjunction with full clinical examination.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

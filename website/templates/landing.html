@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinesys – Precision Neurological & Cognitive Screening</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo-brand">
+            <span class="logo-dot" style="animation: pulse-dot 2s infinite;"></span>
+            <span>Kinesys</span>
+        </a>
+        <style>
+            @keyframes pulse-dot {
+                0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+                70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+            }
+            .waveform-container {
+                width: 100%;
+                max-width: 650px;
+                height: 90px;
+                margin: 2rem auto 2.5rem auto;
+                position: relative;
+            }
+            .waveform-path {
+                stroke: var(--mint-primary);
+                stroke-width: 2.5;
+                fill: none;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                filter: drop-shadow(0 0 8px var(--mint-glow));
+                stroke-dasharray: 1000;
+                stroke-dashoffset: 1000;
+                animation: drawLine 3.5s ease-in-out infinite alternate;
+            }
+            @keyframes drawLine {
+                0% { stroke-dashoffset: 1000; }
+                100% { stroke-dashoffset: 0; }
+            }
+            .stat-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.25rem;
+                margin: 3rem 0;
+            }
+            .stat-box {
+                background: var(--bg-surface);
+                border: 1px solid var(--border-light);
+                padding: 1.25rem 1rem;
+                border-radius: 10px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+            .stat-value {
+                font-size: 1.7rem; font-weight: 800; color: var(--mint-primary); font-family: var(--font-mono);
+            }
+            .stat-label {
+                font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-top: 0.35rem;
+            }
+        </style>
+        <div class="nav-controls">
+            <a href="/doctor" class="btn btn-outline">Physician Portal 🩺</a>
+            <a href="/app" class="btn btn-mint">Launch Assessment Suite →</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section style="text-align: center; padding: 4rem 0 3rem 0;">
+            <div class="mono-label" style="color: var(--mint-primary); margin-bottom: 1rem;">CLINICAL BIOMARKER DISCOVERY ENGINE</div>
+            <h1 style="font-size: 3.2rem; font-weight: 700; max-width: 900px; margin: 0 auto 1.5rem auto; line-height: 1.2;">
+                Precision Neurological & Cognitive Screening
+            </h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 780px; margin: 0 auto 2.5rem auto; line-height: 1.7;">
+                A suite of 9 short motor and cognitive check-ins built on published research that track your own patterns over time — steadiness, memory, focus, and more.
+            </p>
+            <div class="waveform-container">
+                <svg viewBox="0 0 600 100" width="100%" height="100%">
+                    <path class="waveform-path" d="M0,50 L50,50 L60,20 L75,80 L85,40 L100,60 L110,50 L200,50 L210,30 L225,90 L235,10 L250,70 L260,50 L350,50 L360,20 L375,80 L385,40 L400,60 L410,50 L500,50 L510,15 L525,85 L535,35 L550,65 L560,50 L600,50" />
+                </svg>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2.5rem;">
+                <a href="/app" class="btn btn-mint" style="padding: 0.85rem 2rem; font-size: 1.05rem;">Begin Assessment Suite →</a>
+            </div>
+
+            <!-- Epidemiological & Research Clinical Statistics Strip -->
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-value">60-80%</div>
+                    <div class="stat-label">Dopamine neuron loss occurring before visible clinical symptoms appear</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">7-10M</div>
+                    <div class="stat-label">People affected by neurodegenerative conditions worldwide</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">86%</div>
+                    <div class="stat-label">Biomarker sensitivity of motor & keystroke research (Nature, 2022)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">5-10 Yrs</div>
+                    <div class="stat-label">Latency between biological marker onset and clinical diagnosis</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assessment Suite Grid -->
+        <section style="margin-top: 3rem;">
+            <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h2 style="font-size: 1.6rem; font-weight: 700;">9 Research-Backed Assessment Protocols</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Multi-domain check-ins and real-time telemetry extraction.</p>
+                </div>
+            </div>
+
+            <div class="hub-grid">
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M10 14h4"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Typing Rhythm</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Keystroke timing patterns and rhythm</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Tap Sync</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Alternating finger tapping and steadiness</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"></path><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 2z"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Path Trace</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Archimedes spiral tracing and movement smoothness</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Steady Hold</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Cursor holding and micro-steadiness</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Flash React</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Reaction time variability and response control</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Sequence Recall</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Corsi block spatial working memory</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Trail Connect</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Sequential switching and processing speed</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Word Spark</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Verbal fluency and word-retrieval speed</p>
+                </div>
+
+                <div class="card">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Focus Watch</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Continuous performance attention tracking</p>
+                </div>
+            </div></div>
+        </section>
+
+        <!-- 5-Layer Defense-in-Depth Architecture -->
+        <section style="margin: 4rem 0;">
+            <div class="panel" style="background: var(--bg-surface);">
+                <div class="mono-label" style="color: var(--mint-primary); margin-bottom: 0.5rem;">CLINICAL ENGINE ARCHITECTURE</div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">5-Layer Defense-in-Depth Diagnostic Framework</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-family: var(--font-mono); font-size: 0.82rem;">
+                    <div style="background: var(--bg-input); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <strong style="color: var(--mint-primary);">Layer 1</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Outlier Rejection at 2.5 SD from median</p>
+                    </div>
+                    <div style="background: var(--bg-input); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <strong style="color: var(--mint-primary);">Layer 2</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Personalized First-3-Session Baseline</p>
+                    </div>
+                    <div style="background: var(--bg-input); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <strong style="color: var(--mint-primary);">Layer 3</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">5-Session Minimum Floor before Verdict</p>
+                    </div>
+                    <div style="background: var(--bg-input); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <strong style="color: var(--mint-primary);">Layer 4</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Sustained Pattern Drift (≥15% decline)</p>
+                    </div>
+                    <div style="background: var(--bg-input); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <strong style="color: var(--mint-primary);">Layer 5</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Multi-Disease Symptom Overlap (≥2 markers)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer style="border-top: 1px solid var(--border-light); padding: 2rem 0; text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+        <div class="container">
+            <p>&copy; 2026 Kinesys Clinical Engine. Research & Screening Purpose Only.</p>
+        </div>
+    </footer>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinesys – Clinical Assessment Hub</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo-brand">
+            <span class="logo-dot"></span>
+            <span>Kinesys</span>
+        </a>
+        <div class="nav-controls">
+            <div id="user-bar" class="hidden" style="display: flex; align-items: center; gap: 1rem;">
+                <span class="user-badge-text">Signed in as <strong id="user-name-display">...</strong></span>
+                <button id="nav-share-doc-btn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.82rem; border-color: var(--mint-primary); color: var(--mint-primary);">Share with Physician 🩺</button>
+                <button id="nav-switch-btn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;">Switch</button>
+                <button id="nav-dashboard-btn" class="btn btn-mint">View Dashboard →</button>
+            </div>
+            <a href="/doctor" class="btn btn-outline" style="margin-right: 0.5rem;">Physician Portal 🩺</a>
+            <button id="nav-login-btn" class="btn btn-mint">Register Patient</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="hub-panel">
+            <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 style="font-size: 1.8rem; font-weight: 700;">Clinical Assessment Suite</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">Select an assessment protocol to evaluate motor & cognitive biomarker drift.</p>
+                </div>
+                <div class="mono-label" style="color: var(--mint-primary);">9 Validated Protocols</div>
+            </div>
+
+            <div class="hub-grid">
+                <!-- 1. Typing Rhythm -->
+                <div class="card card-hover" data-game="typing" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M10 14h4"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Typing Rhythm</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Keystroke timing patterns and rhythm</p>
+                </div>
+
+                <!-- 2. Tap Sync -->
+                <div class="card card-hover" data-game="tapsync" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Tap Sync</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Alternating finger tapping and steadiness</p>
+                </div>
+
+                <!-- 3. Path Trace -->
+                <div class="card card-hover" data-game="pathtrace" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"></path><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Path Trace</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Spiral tracing and movement smoothness</p>
+                </div>
+
+                <!-- 4. Steady Hold -->
+                <div class="card card-hover" data-game="steadyhold" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Steady Hold</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Cursor holding and micro-steadiness</p>
+                </div>
+
+                <!-- 5. Flash React -->
+                <div class="card card-hover" data-game="flashreact" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Flash React</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Reaction time variability and response control</p>
+                </div>
+
+                <!-- 6. Sequence Recall -->
+                <div class="card card-hover" data-game="sequence" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Sequence Recall</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Corsi block spatial working memory</p>
+                </div>
+
+                <!-- 7. Trail Connect -->
+                <div class="card card-hover" data-game="trailmaking" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Trail Connect</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Sequential switching and processing speed</p>
+                </div>
+
+                <!-- 8. Word Spark -->
+                <div class="card card-hover" data-game="wordspark" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Word Spark</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Verbal fluency and word-retrieval speed</p>
+                </div>
+
+                <!-- 9. Focus Watch -->
+                <div class="card card-hover" data-game="focuswatch" style="cursor: pointer;">
+                    <svg class="game-icon-svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <h3 style="margin-bottom: 0.35rem;">Focus Watch</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Continuous performance attention tracking</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-panel" class="hidden">
+            <!-- Game UI injected by main.js -->
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content" id="modal-body">
+            <!-- Injected by main.js -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/games/typing.js"></script>
+    <script src="/static/js/games/tapsync.js"></script>
+    <script src="/static/js/games/pathtrace.js"></script>
+    <script src="/static/js/games/steadyhold.js"></script>
+    <script src="/static/js/games/flashreact.js"></script>
+    <script src="/static/js/games/sequence.js"></script>
+    <script src="/static/js/games/trailmaking.js"></script>
+    <script src="/static/js/games/wordspark.js"></script>
+    <script src="/static/js/games/focuswatch.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
